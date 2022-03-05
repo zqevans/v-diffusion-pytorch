@@ -201,7 +201,7 @@ def prk_sample(model, x, steps, extra_args, is_reverse=False, callback=None):
 
 
 @torch.no_grad()
-def plms_sample(model, x, steps, extra_args, is_reverse=False, callback=None):
+def plms_sample(model, x, steps, extra_args, is_reverse=False, callback=None, postprocess_fn=None):
     """Draws samples from a model given starting noise using fourth order
     Pseudo Linear Multistep."""
     ts = x.new_ones([x.shape[0]])
@@ -215,6 +215,8 @@ def plms_sample(model, x, steps, extra_args, is_reverse=False, callback=None):
         else:
             x, eps, pred = plms_step(model_fn, x, old_eps, steps[i] * ts, steps[i + 1] * ts, extra_args)
             old_eps.pop(0)
+        if postprocess_fn is not None:
+            eps = postprocess_fn(eps)
         old_eps.append(eps)
         if callback is not None:
             callback({'x': x, 'i': i, 't': steps[i], 'pred': pred})

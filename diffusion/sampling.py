@@ -216,7 +216,7 @@ def plms_sample(model, x, steps, extra_args, is_reverse=False, callback=None, po
             x, eps, pred = plms_step(model_fn, x, old_eps, steps[i] * ts, steps[i + 1] * ts, extra_args)
             old_eps.pop(0)
         if postprocess_fn is not None:
-            eps = postprocess_fn(eps)
+            eps = postprocess_fn(eps, steps[i])
         old_eps.append(eps)
         if callback is not None:
             callback({'x': x, 'i': i, 't': steps[i], 'pred': pred})
@@ -273,7 +273,7 @@ def plms2_sample(model, x, steps, extra_args, is_reverse=False, callback=None, p
             x, eps, pred = plms2_step(model_fn, x, old_eps, steps[i] * ts, steps[i + 1] * ts, extra_args)
             old_eps.pop(0)
         if postprocess_fn is not None:
-            eps = postprocess_fn(eps)
+            eps = postprocess_fn(eps, steps[i])
         old_eps.append(eps)
         if callback is not None:
             callback({'x': x, 'i': i, 't': steps[i], 'pred': pred})
